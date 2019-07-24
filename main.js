@@ -93,6 +93,9 @@ function Chat () {
 }
 async function main () {
 	const chat = new Chat()
-	await chat.addComments()
-	chat.writeList()
+	setInterval(async ()=> {
+		await chat.addComments()
+		chat.writeList()
+	},
+	2000)
 };main()
