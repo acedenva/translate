@@ -1,0 +1,19 @@
+{
+  "name": "translate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+    "@google-cloud/translate": "^4.1.1",
+    "cheerio": "^1.0.0-rc.3",
+    "puppeteer": "^1.19.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
