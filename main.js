@@ -3,11 +3,21 @@ const request = require('request-promise-native')
 const puppeteer = require('puppeteer')
 const fs = require('fs')
 const app = new Translate()
+const timeout = function (ms) {
+	return new Promise(resolve => {
+		setTimeout(resolve, ms)
+	})
+}
+const setIntervalAsync = function (fn, ms) {
+  fn().then(() => {
+    setTimeout(() => setIntervalAsync(fn, ms), ms);
+  });
+};
 async function translate(text) {
-	console.log('ran')
 	let translation = await app.translate(text, 'en')
-	return translation
-};//main()
+	return translation[0]
+//	return text
+}
 function Chat () {
 	this.loadEntries = function () {
 		if (fs.existsSync('./entries.json')) {
@@ -15,6 +25,7 @@ function Chat () {
 			this.entries = JSON.parse(entriesJson)
 		} else {
 			fs.writeFileSync('./entries.json', '[]', 'utf8')
+			this.entries = []
 		}
 	};this.loadEntries()
 	this.saveEntries = function () {
@@ -29,20 +40,21 @@ function Chat () {
 			name: '',
 			date: 0
 		}
+
 		let found = this.entries.find((entry)=>{
 			return entry.commentDe == comment || entry.commentEn == comment
 		})
 		if (!found) {
 			entry.commentDe = comment
-			entry.commentEn = (await translate(comment))[0]
+			entry.commentEn = await translate(comment)
 			entry.name = name
 			this.entries.push(entry)
 			this.saveEntries()
 		}
 	}
 	this.addComments= async function () {
+		let user = 'AustinYerger'
 	//	let user = 'Drache_Offiziell'
-		let user = 'Drache_Offiziell'
 		let apiUsersUrl = 'https://api.younow.com/php/api/broadcast/info/curId=0/user='
 		let getApiOptions = { 
 			method: 'GET',
@@ -52,15 +64,22 @@ function Chat () {
 			},
 			transform: (rawbody)=>{
 				let body = JSON.parse(rawbody)
-				if (body.errorCode == 0) { 
+				if (body.errorCode == 0 && body.comments) { 
 					return body.comments
 				}
 			}
 		}
 		try {
 			let comments = await request(getApiOptions)
-			for (comment of comments) {
-				await this.createEntry(comment.comment, comment.name)
+			if (comments != undefined) {
+				if (comments.length > 10) {
+					 comments = comments.slice(-10,comments.length)
+				}
+				for (comment of comments) {
+					await this.createEntry(comment.comment, comment.name)
+				}
+			} else {
+				console.log(`${user} has no commentators`)
 			}
 		} catch (err) {
 			console.log (err)
@@ -91,11 +110,14 @@ function Chat () {
 		fs.writeFileSync('./list.txt', commentsString, 'utf8') 
 	}
 }
-async function main () {
+function main () {
 	const chat = new Chat()
-	setInterval(async ()=> {
-		await chat.addComments()
-		chat.writeList()
-	},
-	2000)
+	setIntervalAsync(updateList,1000)
+	function updateList() {
+		return new Promise(async (resolve, reject)=>{
+			await chat.addComments()
+			chat.writeList()	
+			resolve(null)
+		})
+	}
 };main()
