@@ -53,8 +53,7 @@ function Chat () {
 		}
 	}
 	this.addComments= async function () {
-		let user = 'AustinYerger'
-	//	let user = 'Drache_Offiziell'
+		let user = 'Drache_Offiziell'
 		let apiUsersUrl = 'https://api.younow.com/php/api/broadcast/info/curId=0/user='
 		let getApiOptions = { 
 			method: 'GET',
@@ -72,8 +71,8 @@ function Chat () {
 		try {
 			let comments = await request(getApiOptions)
 			if (comments != undefined) {
-				if (comments.length > 10) {
-					 comments = comments.slice(-10,comments.length)
+				if (comments.length > 30) {
+					 comments = comments.slice(-30,comments.length)
 				}
 				for (comment of comments) {
 					await this.createEntry(comment.comment, comment.name)
@@ -101,7 +100,7 @@ function Chat () {
 		await browser.close()
 	}
 	this.writeList = function () {
-		let entriesSlice = this.entries.slice(-10)
+		let entriesSlice = this.entries.slice(-30)
 		let commentsString = '' 
 		entriesSlice.forEach(entry=>{
 			let commentString =`<${entry.name}> ${entry.commentEn}\r\n` 
