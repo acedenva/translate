@@ -13,19 +13,33 @@ const setIntervalAsync = function (fn, ms) {
     setTimeout(() => setIntervalAsync(fn, ms), ms);
   });
 };
-const function = function translate (text) {
-	let translation = await app.translate(text, 'en')
-	return translation[0]
-//	return text
+const translate = async function (text) {
+//	let translation = await app.translate(text, 'en')
+//	return translation[0]
+	return text
+}
+const fill = function (arr, length) {
+	let i = arr.length
+	for (i; i < length; i++) {
+		let entry = {
+			name: '',
+			commentEn: '\r\n',
+			commentDe: '',
+		}
+		arr.unshift(entry)
+	}
+	return arr 
 }
 function Chat () {
+	this.chatLength = 30
+	this.user = 'LachFlat'
 	this.loadEntries = function () {
 		if (fs.existsSync('./entries.json')) {
 			let entriesJson = fs.readFileSync('./entries.json', 'utf8')
-			this.entries = JSON.parse(entriesJson)
+			this.entries = fill(JSON.parse(entriesJson), this.chatLength)
 		} else {
-			fs.writeFileSync('./entries.json', '[]', 'utf8')
-			this.entries = []
+			this.entries = fill([], this.chatLength)
+			fs.writeFileSync('./entries.json', JSON.stringify(this.entries), 'utf8')
 		}
 	};this.loadEntries()
 	this.saveEntries = function () {
@@ -53,7 +67,7 @@ function Chat () {
 		}
 	}
 	this.addComments= async function () {
-		let user = 'LachFlat'
+		let user = this.user 
 //		let user = 'Drache_Offiziell'
 		let apiUsersUrl = 'https://api.younow.com/php/api/broadcast/info/curId=0/user='
 		let getApiOptions = { 
@@ -72,8 +86,8 @@ function Chat () {
 		try {
 			let comments = await request(getApiOptions)
 			if (comments != undefined) {
-				if (comments.length > 30) {
-					 comments = comments.slice(-30,comments.length)
+				if (comments.length > 15) {
+					 comments = comments.slice(-this.chatLength,comments.length)
 				}
 				for (comment of comments) {
 					await this.createEntry(comment.comment, comment.name)
@@ -101,7 +115,7 @@ function Chat () {
 		await browser.close()
 	}
 	this.writeList = function () {
-		let entriesSlice = this.entries.slice(-30)
+		let entriesSlice = this.entries.slice(-this.chatLength)
 		let commentsString = '' 
 		entriesSlice.forEach(entry=>{
 			let commentString =`<${entry.name}> ${entry.commentEn}\r\n` 
@@ -120,4 +134,4 @@ function main () {
 			resolve(null)
 		})
 	}
-};main()
+}main()
