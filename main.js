@@ -13,7 +13,7 @@ const setIntervalAsync = function (fn, ms) {
     setTimeout(() => setIntervalAsync(fn, ms), ms);
   });
 };
-async function translate(text) {
+const function = function translate (text) {
 	let translation = await app.translate(text, 'en')
 	return translation[0]
 //	return text
@@ -53,7 +53,8 @@ function Chat () {
 		}
 	}
 	this.addComments= async function () {
-		let user = 'Drache_Offiziell'
+		let user = 'LachFlat'
+//		let user = 'Drache_Offiziell'
 		let apiUsersUrl = 'https://api.younow.com/php/api/broadcast/info/curId=0/user='
 		let getApiOptions = { 
 			method: 'GET',
