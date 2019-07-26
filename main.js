@@ -32,7 +32,7 @@ const fill = function (arr, length) {
 }
 function Chat () {
 	this.chatLength = 30
-	this.user = 'BrianM3ndoza'
+	this.user = 'Drache_Offiziell'
 	this.loadEntries = function () {
 		if (fs.existsSync('./entries.json')) {
 			let entriesJson = fs.readFileSync('./entries.json', 'utf8')
@@ -68,7 +68,7 @@ function Chat () {
 	}
 	this.addComments= async function () {
 		let user = this.user 
-//		let user = 'Drache_Offiziell'
+//	let user = 'Drache_Offiziell'
 		let apiUsersUrl = 'https://api.younow.com/php/api/broadcast/info/curId=0/user='
 		let getApiOptions = { 
 			method: 'GET',
@@ -100,8 +100,7 @@ function Chat () {
 		}
 	}
 	this.addCommentsReq = async function() {
-		let url = 'http://y.drch.cf/?s=Drache_Offiziell'
-//		let url = 'http://y.drch.cf/?s=anthonystacy123' 
+		//let url = ''
 		let browser = await puppeteer.launch()
 		let page = await browser.newPage()
 		let response = await page.goto(url,{waitUntil:'networkidle0'})
@@ -142,5 +141,4 @@ function main () {
 			resolve(null)
 		})
 	}
-}main()
-
+};main()
