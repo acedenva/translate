@@ -22,9 +22,9 @@ const fill = function (arr, length) {
 	let i = arr.length
 	for (i; i < length; i++) {
 		let entry = {
-			name: '',
-			commentEn: '\r\n',
-			commentDe: '',
+			name: false,
+			commentEn: false,
+			commentDe: false,
 		}
 		arr.unshift(entry)
 	}
@@ -32,13 +32,13 @@ const fill = function (arr, length) {
 }
 function Chat () {
 	this.chatLength = 30
-	this.user = 'LachFlat'
+	this.user = 'BrianM3ndoza'
 	this.loadEntries = function () {
 		if (fs.existsSync('./entries.json')) {
 			let entriesJson = fs.readFileSync('./entries.json', 'utf8')
-			this.entries = fill(JSON.parse(entriesJson), this.chatLength)
+			this.entries = JSON.parse(entriesJson)
 		} else {
-			this.entries = fill([], this.chatLength)
+			this.entries = [] 
 			fs.writeFileSync('./entries.json', JSON.stringify(this.entries), 'utf8')
 		}
 	};this.loadEntries()
@@ -87,7 +87,7 @@ function Chat () {
 			let comments = await request(getApiOptions)
 			if (comments != undefined) {
 				if (comments.length > 15) {
-					 comments = comments.slice(-this.chatLength,comments.length)
+					 comments = comments.slice(15)//-this.chatLength)
 				}
 				for (comment of comments) {
 					await this.createEntry(comment.comment, comment.name)
@@ -116,12 +116,20 @@ function Chat () {
 	}
 	this.writeList = function () {
 		let entriesSlice = this.entries.slice(-this.chatLength)
-		let commentsString = '' 
+		if (entriesSlice.length < this.chatLength) {
+			entriesSlice = fill(entriesSlice,  this.chatLength)
+		}
+		let fullString = '' 
+		let commentString = ''
 		entriesSlice.forEach(entry=>{
-			let commentString =`<${entry.name}> ${entry.commentEn}\r\n` 
-			commentsString += commentString
+			if (entry.commentEn) {
+				commentString =`<${entry.name}> ${entry.commentEn}\r\n` 
+			} else {
+				commentString = '\r\n'
+			}
+			fullString += commentString
 		})
-		fs.writeFileSync('./list.txt', commentsString, 'utf8') 
+		fs.writeFileSync('./list.txt', fullString, 'utf8') 
 	}
 }
 function main () {
@@ -135,3 +143,4 @@ function main () {
 		})
 	}
 }main()
+
