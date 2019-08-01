@@ -14,9 +14,9 @@ const setIntervalAsync = function (fn, ms) {
   });
 };
 const translate = async function (text) {
-//	let translation = await app.translate(text, 'en')
-//	return translation[0]
-	return text
+	let translation = await app.translate(text, 'en')
+	return translation[0]
+//	return text
 }
 const fill = function (arr, length) {
 	let i = arr.length
@@ -31,7 +31,7 @@ const fill = function (arr, length) {
 	return arr 
 }
 function Chat () {
-	this.chatLength = 30
+	this.chatLength = 15
 	this.user = 'Drache_Offiziell'
 	this.loadEntries = function () {
 		if (fs.existsSync('./entries.json')) {
