@@ -31,7 +31,7 @@ const fill = function (arr, length) {
 	return arr 
 }
 function Chat () {
-	this.chatLength = 15
+	this.chatLength = 12
 	this.user = 'Drache_Offiziell'
 	this.loadEntries = function () {
 		if (fs.existsSync('./entries.json')) {
